@@ -63,7 +63,7 @@ export default function Chat() {
         }
       ).subscribe();
     return () => { supabase.removeChannel(canal); };
-  }, [estaLogado]);
+  }, [estaLogado, dados.sala]);
 
   const enviarMensagem = async () => {
     if (!texto.trim()) return;
@@ -71,7 +71,7 @@ export default function Chat() {
     setTexto("");
   };
 
-  // TELA DE LOGIN (ESTILO CLEAN)
+  // TELA DE LOGIN
   if (!estaLogado) {
     return (
       <div className="flex h-screen items-center justify-center bg-slate-50 p-6 font-sans">
@@ -91,11 +91,10 @@ export default function Chat() {
     );
   }
 
-  // TELA DO DASHBOARD (LADO A LADO)
+  // TELA DO DASHBOARD
   return (
     <div className="flex h-screen bg-white text-slate-800 font-sans overflow-hidden">
       
-      {/* SIDEBAR ESQUERDA (INFORMAÇÕES) */}
       <aside className="hidden lg:flex w-[320px] flex-col p-8 bg-slate-50 border-r border-slate-200 shadow-inner">
         <div className="mb-10">
           <h1 className="text-3xl font-black text-blue-600 uppercase tracking-tighter italic">WebChat</h1>
@@ -104,7 +103,7 @@ export default function Chat() {
         
         <div className="flex-1 space-y-8">
           <section>
-            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Tecnologias do Projeto</h3>
+            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Tecnologias</h3>
             <div className="grid grid-cols-1 gap-2">
               <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
@@ -120,14 +119,6 @@ export default function Chat() {
               </div>
             </div>
           </section>
-
-          <section>
-            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Infraestrutura</h3>
-            <div className="space-y-1">
-              <p className="text-xs text-slate-500 italic">Deploy realizado via <strong>Vercel</strong></p>
-              <p className="text-xs text-slate-500 italic">Banco <strong>PostgreSQL</strong> no Supabase</p>
-            </div>
-          </section>
         </div>
 
         <button onClick={() => window.location.reload()} className="mt-auto w-full p-4 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-red-600 transition-all shadow-xl">
@@ -135,11 +126,8 @@ export default function Chat() {
         </button>
       </aside>
 
-      {/* ÁREA DO CHAT (DIREITA) */}
-      <main className="flex-1 flex flex-col bg-white">
-        
-        {/* HEADER DO CHAT */}
-        <header className="px-10 py-6 border-b border-slate-100 flex justify-between items-center bg-white/80 backdrop-blur-sm sticky top-0">
+      <main className="flex-1 flex flex-col bg-white overflow-hidden">
+        <header className="px-10 py-6 border-b border-slate-100 flex justify-between items-center bg-white/80 backdrop-blur-sm sticky top-0 z-10">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
@@ -155,16 +143,16 @@ export default function Chat() {
           </div>
         </header>
 
-        {/* FEED DE MENSAGENS */}
         <div ref={scrollRef} className="flex-1 overflow-y-auto px-10 py-8 space-y-6 bg-slate-50/40">
           {mensagens.map((m, i) => {
             const eu = m.usuario === dados.nome;
             return (
               <div key={i} className={`flex ${eu ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
-                <div className={`max-w-[65%] flex flex-col ${eu ? 'items-end' : 'items-start'}`}>
+                <div className={`max-w-[85%] sm:max-w-[65%] flex flex-col ${eu ? 'items-end' : 'items-start'}`}>
                   {!eu && <span className="text-[9px] font-black text-slate-400 ml-4 mb-1 uppercase tracking-widest">{m.usuario}</span>}
                   
-                  <div className={`px-6 py-4 rounded-[2rem] text-sm font-medium shadow-sm border ${
+                  {/* BALÃO COM FIX PARA TEXTO LONGO */}
+                  <div className={`px-6 py-4 rounded-[2rem] text-sm font-medium shadow-sm border break-words overflow-hidden w-full ${
                     eu 
                       ? 'bg-blue-600 text-white border-blue-500 rounded-tr-none' 
                       : 'bg-white text-slate-700 border-slate-200 rounded-tl-none'
@@ -181,7 +169,6 @@ export default function Chat() {
           })}
         </div>
 
-        {/* BARRA DE ENVIO */}
         <footer className="p-8 bg-white border-t border-slate-100">
           <div className="max-w-4xl mx-auto flex gap-4">
             <input 
@@ -191,10 +178,7 @@ export default function Chat() {
               onKeyDown={e => e.key === 'Enter' && enviarMensagem()}
               placeholder="Digite sua mensagem aqui..."
             />
-            <button 
-              className="bg-blue-600 hover:bg-blue-700 text-white px-10 rounded-3xl font-black transition-all active:scale-95 shadow-xl shadow-blue-100 uppercase text-[10px] tracking-[0.2em]" 
-              onClick={enviarMensagem}
-            >
+            <button className="bg-blue-600 hover:bg-blue-700 text-white px-10 rounded-3xl font-black transition-all active:scale-95 shadow-xl shadow-blue-100 uppercase text-[10px] tracking-[0.2em]" onClick={enviarMensagem}>
               Enviar
             </button>
           </div>
