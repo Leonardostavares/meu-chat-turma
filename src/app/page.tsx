@@ -35,7 +35,7 @@ export default function Chat() {
 
     if (!error && data) {
       setDados(prev => ({ ...prev, nomeSala: data.nome_exibicao }));
-      setEstaLogado(true);
+      setEstaLogado(true);  
     } else {
       alert("Código de sala inválido!");
     }
