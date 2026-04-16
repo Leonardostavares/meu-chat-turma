@@ -95,6 +95,7 @@ export default function Chat() {
   return (
     <div className="flex h-screen bg-white text-slate-800 font-sans overflow-hidden">
       
+      {/* SIDEBAR (SÓ APARECE NO PC) */}
       <aside className="hidden lg:flex w-[320px] flex-col p-8 bg-slate-50 border-r border-slate-200 shadow-inner">
         <div className="mb-10">
           <h1 className="text-3xl font-black text-blue-600 uppercase tracking-tighter italic">WebChat</h1>
@@ -127,23 +128,36 @@ export default function Chat() {
       </aside>
 
       <main className="flex-1 flex flex-col bg-white overflow-hidden">
-        <header className="px-10 py-6 border-b border-slate-100 flex justify-between items-center bg-white/80 backdrop-blur-sm sticky top-0 z-10">
-          <div>
+        {/* HEADER ADAPTÁVEL */}
+        <header className="px-6 sm:px-10 py-6 border-b border-slate-100 flex justify-between items-center bg-white/80 backdrop-blur-sm sticky top-0 z-10">
+          <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
               <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
               <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Sala Ativa</span>
             </div>
-            <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter leading-none">
+            <h2 className="text-lg sm:text-2xl font-black text-slate-900 uppercase tracking-tighter leading-none truncate max-w-[200px] sm:max-w-none">
               {dados.sala} • {dados.nomeSala}
             </h2>
           </div>
-          <div className="text-right hidden sm:block">
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Usuário logado</p>
-            <p className="text-sm font-black text-blue-600 uppercase tracking-tighter">{dados.nome}</p>
+
+          <div className="flex items-center gap-4">
+            <div className="text-right hidden sm:block">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Usuário logado</p>
+              <p className="text-sm font-black text-blue-600 uppercase tracking-tighter">{dados.nome}</p>
+            </div>
+            
+            {/* BOTÃO DE SAIR (SÓ APARECE NO CELULAR) */}
+            <button 
+              onClick={() => window.location.reload()} 
+              className="p-3 bg-slate-100 text-slate-500 rounded-xl lg:hidden active:bg-red-50 active:text-red-600 transition-all"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            </button>
           </div>
         </header>
 
-        <div ref={scrollRef} className="flex-1 overflow-y-auto px-10 py-8 space-y-6 bg-slate-50/40">
+        {/* FEED DE MENSAGENS */}
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 sm:px-10 py-8 space-y-6 bg-slate-50/40">
           {mensagens.map((m, i) => {
             const eu = m.usuario === dados.nome;
             return (
@@ -151,7 +165,6 @@ export default function Chat() {
                 <div className={`max-w-[85%] sm:max-w-[65%] flex flex-col ${eu ? 'items-end' : 'items-start'}`}>
                   {!eu && <span className="text-[9px] font-black text-slate-400 ml-4 mb-1 uppercase tracking-widest">{m.usuario}</span>}
                   
-                  {/* BALÃO COM FIX PARA TEXTO LONGO */}
                   <div className={`px-6 py-4 rounded-[2rem] text-sm font-medium shadow-sm border break-words overflow-hidden w-full ${
                     eu 
                       ? 'bg-blue-600 text-white border-blue-500 rounded-tr-none' 
@@ -169,16 +182,17 @@ export default function Chat() {
           })}
         </div>
 
-        <footer className="p-8 bg-white border-t border-slate-100">
-          <div className="max-w-4xl mx-auto flex gap-4">
+        {/* BARRA DE ENVIO */}
+        <footer className="p-4 sm:p-8 bg-white border-t border-slate-100">
+          <div className="max-w-4xl mx-auto flex gap-2 sm:gap-4">
             <input 
-              className="flex-1 bg-slate-100 p-5 rounded-3xl outline-none border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all text-sm font-medium shadow-inner" 
+              className="flex-1 bg-slate-100 p-4 sm:p-5 rounded-3xl outline-none border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all text-sm font-medium shadow-inner" 
               value={texto} 
               onChange={e => setTexto(e.target.value)} 
               onKeyDown={e => e.key === 'Enter' && enviarMensagem()}
-              placeholder="Digite sua mensagem aqui..."
+              placeholder="Mensagem..."
             />
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-10 rounded-3xl font-black transition-all active:scale-95 shadow-xl shadow-blue-100 uppercase text-[10px] tracking-[0.2em]" onClick={enviarMensagem}>
+            <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-10 rounded-3xl font-black transition-all active:scale-95 shadow-xl shadow-blue-100 uppercase text-[10px] tracking-[0.2em]" onClick={enviarMensagem}>
               Enviar
             </button>
           </div>
